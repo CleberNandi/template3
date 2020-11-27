@@ -1,14 +1,26 @@
-# encoding: utf-8
+# -*- utf-8 -*-
 import os
+import sys
 
-from MyLib.MyPath import RootPath
-from MyLib.MyMessage import PrintMessage
-from MyLib.MyText import ListFilesOnDir
-from MyLib.MyEmail import SendEmail, SendEmailInfo, SendEmailWarnig, SendEmailError, SendEmailGmail
+from configparser import ConfigParser
 
-from MyLib.MyConstants import START_SCRIPT_MESSAGE, END_SCRIPT_MESSAGE, HOSTNAME, ENVIRONMENT, LOCATION
+ConfFile = "config.conf"
 
-__version__ = "01.20201125.01"
+Conf = ConfigParser()
+if os.path.exists(ConfFile):
+	Conf.read(ConfFile)
+else:
+	raise TypeError(f"Erro ao ler arquivo de config")
+
+sys.path.insert(0, Conf.get("PATH", "MODULES_PATH"))
+from MyMessage import PrintMessage
+from MyText import ListFilesOnDir
+from MyEmail import SendEmail, SendEmailInfo, SendEmailWarnig, SendEmailError, SendEmailGmail
+
+from MyConstants import START_SCRIPT_MESSAGE, END_SCRIPT_MESSAGE, HOSTNAME, ENVIRONMENT, LOCATION
+from MyConstants import ROOT_PATH, MODULE_PATH, SCRIPT_FRIENDLYNAME, VERSION_APP
+
+__version__ = VERSION_APP
 
 #  ================= Variables Globals ================
 

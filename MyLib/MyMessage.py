@@ -1,12 +1,17 @@
-# encoding: utf-8
+#-*- utf-8 -*-
 import datetime
+import inspect
 import logging
 import os
+import sys
+
+ModuleFolder = os.path.realpath(os.path.dirname(inspect.getfile(inspect.currentframe())))
+if ModuleFolder not in sys.path:
+	sys.path.insert(0, ModuleFolder)
 
 from time import strftime
 
-from MyLib.MyPath import LooginPath
-from MyLib.MyConstants import LOGGING_NAME_PATH
+from MyConstants import LOGGING_DIR, LOGGING_NAME_PATH
 
 __version__ = "01.20201125.01"
 
@@ -40,14 +45,18 @@ def PrintMessage(StrMessage, StrMessageType="I", LogOnly=False):
 			"E": [logging.error, MessageError],
 		}
 
-		LoggingMessage[MessageType][0](Message)
+		# LoggingMessage[MessageType][0](str(Message, encoding="1252"))
+		LoggingMessage[MessageType][0](Message
+                                 		.encode(encoding='utf-8', errors='strict')
+										.decode(encoding="1252", errors="strict")
+                                    )
 		if not LogOnly:
 			print(f"{str_date_now} #{MessageType}# {LoggingMessage.get(MessageType)[1]}")
 	except Exception as Error_print:
 		print(f"Erro em PrintMessage. Erro: {Error_print}")
 
 try:
-    os.mkdir(LooginPath)
+    os.mkdir(LOGGING_DIR)
 except FileExistsError:
     pass
 
@@ -58,5 +67,5 @@ logging.basicConfig(
 	datefmt="%Y-%m-%d %H:%M:%S"
 )
    
-    
-
+if __name__ == "__main__":
+	PrintMessage("Estou no módulo que trata mensagens.", "OK")

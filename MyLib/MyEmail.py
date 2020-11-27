@@ -1,6 +1,12 @@
 # encoding: utf-8
+import inspect
 import smtplib
 import os
+import sys
+
+ModuleFolder = os.path.realpath(os.path.dirname(inspect.getfile(inspect.currentframe())))
+if ModuleFolder not in sys.path:
+	sys.path.insert(0, ModuleFolder)
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -9,8 +15,8 @@ from email import encoders
 from email.utils import formatdate
 from email.mime.application import MIMEApplication
 
-from MyLib.MyConstants import HOSTNAME, ENVIRONMENT, LOCATION, SCRIPT_FRIENDLYNAME
-from MyLib.MyMessage import PrintMessage
+from MyConstants import HOSTNAME, ENVIRONMENT, LOCATION, SCRIPT_FRIENDLYNAME
+from MyMessage import PrintMessage
 
 __version__ = "01.20201126.01"
 
