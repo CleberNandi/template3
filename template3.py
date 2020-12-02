@@ -28,7 +28,7 @@ print_message(f"Location: {LOCATION}", LogOnly=True)
 root_key = connect_root_key(HKEY_LOCAL_MACHINE)
 path_key = r'SOFTWARE\WOW6432Node\Classes\CLSID'
 key_path_list = []
-key_value_data = r"C:\Dominio\Contabil\101c.00.B\Utilitários\MailBee.dll"
+key_value_data = r"C:\Dominio\Contabil\101c.000.B\Utilitários\MailBee.dll"
 
 search_registry_way(root_key, path_key, key_path_list, search_key="InprocServer32", search_value="MailBee.dll")
 
