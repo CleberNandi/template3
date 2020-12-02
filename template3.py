@@ -2,38 +2,39 @@
 import os
 import sys
 
-from configparser import ConfigParser
+from winreg import HKEY_LOCAL_MACHINE, REG_SZ
 
-ConfFile = "config.conf"
+from my_lib.my_message import print_message
+from my_lib.my_text import ListFilesOnDir
+from my_lib.my_email import SendEmail, SendEmailInfo, SendEmailWarnig, SendEmailError, SendEmailGmail
+from my_lib.my_regedit import connect_root_key, search_registry_way, setKeyReg
 
-Conf = ConfigParser()
-if os.path.exists(ConfFile):
-	Conf.read(ConfFile)
-else:
-	raise TypeError(f"Erro ao ler arquivo de config")
-
-sys.path.insert(0, Conf.get("PATH", "MODULES_PATH"))
-from MyMessage import PrintMessage
-from MyText import ListFilesOnDir
-from MyEmail import SendEmail, SendEmailInfo, SendEmailWarnig, SendEmailError, SendEmailGmail
-
-from MyConstants import START_SCRIPT_MESSAGE, END_SCRIPT_MESSAGE, HOSTNAME, ENVIRONMENT, LOCATION
-from MyConstants import ROOT_PATH, MODULE_PATH, SCRIPT_FRIENDLYNAME, VERSION_APP
+from my_lib.my_constants import START_SCRIPT_MESSAGE, END_SCRIPT_MESSAGE, HOSTNAME, ENVIRONMENT, LOCATION
+from my_lib.my_constants import ROOT_PATH, MODULE_PATH, SCRIPT_FRIENDLYNAME, VERSION_APP
 
 __version__ = VERSION_APP
 
 #  ================= Variables Globals ================
 
 #  ==================== Start Loggin ==================
-PrintMessage(START_SCRIPT_MESSAGE, LogOnly=True)
+print_message(START_SCRIPT_MESSAGE, LogOnly=True)
 
-PrintMessage(f"Script version: {__version__}", LogOnly=True)
-PrintMessage(f"Conputer name: {HOSTNAME}", LogOnly=True)
-PrintMessage(f"Environment: {ENVIRONMENT}", LogOnly=True)
-PrintMessage(f"Location: {LOCATION}", LogOnly=True)
+print_message(f"Script version: {__version__}", LogOnly=True)
+print_message(f"Conputer name: {HOSTNAME}", LogOnly=True)
+print_message(f"Environment: {ENVIRONMENT}", LogOnly=True)
+print_message(f"Location: {LOCATION}", LogOnly=True)
 #  =================== Start Script ===================
 
+root_key = connect_root_key(HKEY_LOCAL_MACHINE)
+path_key = r'SOFTWARE\WOW6432Node\Classes\CLSID'
+key_path_list = []
+key_value_data = r"C:\Dominio\Contabil\101c.00.B\Utilitários\MailBee.dll"
+
+search_registry_way(root_key, path_key, key_path_list, search_key="InprocServer32", search_value="MailBee.dll")
+
+for key in key_path_list:
+    setKeyReg(root_key, key, "", REG_SZ, key_value_data)
 
 
 #  ==================== End Script ====================
-PrintMessage(END_SCRIPT_MESSAGE, LogOnly=True)
+print_message(END_SCRIPT_MESSAGE, LogOnly=True)
